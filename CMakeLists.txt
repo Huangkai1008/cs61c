@@ -19,3 +19,8 @@ add_executable(ex7 lab01/ex7_strings.c)
 add_executable(ex8 lab01/ex8_structs.c)
 add_executable(ex9 lab01/ex9_double_pointers.c)
 add_executable(ex10 lab01/ex10_test_ll_cycle.c lab01/ex10_ll_cycle.c lab01/ex10_ll_cycle.h)
+
+add_executable(lab02_ex1 lab02/ex1_compiler_warnings.c)
+
+
+add_executable(proj1_unittest projs/proj1/src/unit_tests.c)
