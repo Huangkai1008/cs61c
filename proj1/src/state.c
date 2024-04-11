@@ -5,6 +5,9 @@
 #include <stdlib.h>
 #include <string.h>
 
+#define INITIAL_BUFFER_SIZE 128
+#define GROWTH_FACTOR 2
+
 #include "snake_utils.h"
 
 /* Helper function definitions */
@@ -312,8 +315,90 @@ void update_state(game_state_t *state, int (*add_food)(game_state_t *state)) {
 
 /* Task 5 */
 game_state_t *load_board(FILE *fp) {
-    // TODO: Implement this function.
-    return NULL;
+    game_state_t *state = malloc(sizeof(game_state_t));
+    if (state == NULL) {
+        return NULL;
+    }
+
+    state->num_rows = 0;
+    state->board = NULL;
+    state->num_snakes = 0;
+    state->snakes = NULL;
+
+    char *line = (char *) malloc(INITIAL_BUFFER_SIZE * sizeof(char));
+    if (line == NULL) {
+        free(state);
+        return NULL;
+    }
+
+    size_t line_capacity = INITIAL_BUFFER_SIZE;
+
+    while (fgets(line, (int) line_capacity, fp) != NULL) {
+        while (strchr(line, '\n') == NULL) {
+            line_capacity *= GROWTH_FACTOR;
+            char *new_line = realloc(line, line_capacity);
+            if (new_line == NULL) {
+                free(line);
+                for (unsigned int i = 0; i < state->num_rows; i++) {
+                    free(state->board[i]);
+                }
+                free(state->board);
+                free(state);
+                return NULL;
+            }
+            line = new_line;
+
+            if (fgets(line + strlen(line), (int) (line_capacity - strlen(line)), fp) == NULL) {
+                free(line);
+                for (unsigned int i = 0; i < state->num_rows; i++) {
+                    free(state->board[i]);
+                }
+                free(state->board);
+                free(state);
+                return NULL;
+            }
+        }
+
+        size_t len = strlen(line);
+        if (line[len - 1] == '\n') {
+            line[len - 1] = '\0';
+            len--;
+        }
+
+        char *row = malloc((len + 1) * sizeof(char));
+        if (row == NULL) {
+            free(line);
+            for (unsigned int i = 0; i < state->num_rows; i++) {
+                free(state->board[i]);
+            }
+            free(state->board);
+            free(state);
+            return NULL;
+        }
+
+        strncpy(row, line, len + 1);
+
+        char **new_board = realloc(state->board, (state->num_rows + 1) * sizeof(char *));
+        if (new_board == NULL) {
+            free(row);
+            free(line);
+            for (unsigned int i = 0; i < state->num_rows; i++) {
+                free(state->board[i]);
+            }
+            free(state->board);
+            free(state);
+            return NULL;
+        }
+        state->board = new_board;
+        state->board[state->num_rows] = row;
+        state->num_rows++;
+
+        line[0] = '\0';
+    }
+
+    free(line);
+
+    return state;
 }
 
 /*
