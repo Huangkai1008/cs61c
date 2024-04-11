@@ -410,12 +410,55 @@ game_state_t *load_board(FILE *fp) {
   fill in the head row and col in the struct.
 */
 static void find_head(game_state_t *state, unsigned int snum) {
-    // TODO: Implement this function.
-    return;
+    snake_t *snake = &(state->snakes[snum]);
+    unsigned int row = snake->tail_row;
+    unsigned int col = snake->tail_col;
+    char c = get_board_at(state, row, col);
+    while (!is_head(c)) {
+        row = get_next_row(row, c);
+        col = get_next_col(col, c);
+        c = get_board_at(state, row, col);
+    }
+
+    snake->head_row = row;
+    snake->head_col = col;
 }
 
 /* Task 6.2 */
 game_state_t *initialize_snakes(game_state_t *state) {
-    // TODO: Implement this function.
-    return NULL;
+    unsigned int num_snakes = 0;
+    snake_t *snakes = NULL;
+    for (unsigned int row = 0; row < state->num_rows; row++) {
+        for (unsigned int col = 0; col < strlen(state->board[row]); col++) {
+            char c = get_board_at(state, row, col);
+
+            if (is_tail(c)) {
+                snake_t *original_snakes = snakes;
+                // reallocate memory for the new_snakes array to accommodate the new snake
+                snakes = realloc(snakes, (num_snakes + 1) * sizeof(snake_t));
+                if (snakes == NULL) {
+                    free(original_snakes);
+                    return NULL;
+                }
+
+                // initialize the new snake
+                snake_t *snake = &snakes[num_snakes];
+                snake->tail_row = row;
+                snake->tail_col = col;
+                state->snakes = snakes;
+
+                // trace through the snake from the head to find the tail
+                find_head(state, num_snakes);
+
+                // increment the number of new_snakes
+                num_snakes++;
+            }
+        }
+    }
+
+    // store the number of new_snakes and the new_snakes array in the state struct
+    state->num_snakes = num_snakes;
+
+    // return the updated state
+    return state;
 }
