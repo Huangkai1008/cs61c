@@ -293,8 +293,21 @@ static void update_tail(game_state_t *state, unsigned int snum) {
 
 /* Task 4.5 */
 void update_state(game_state_t *state, int (*add_food)(game_state_t *state)) {
-    // TODO: Implement this function.
-    return;
+    for (unsigned int i = 0; i < state->num_snakes; i++) {
+        char x = next_square(state, i);
+        // If the head crashes into the body of a snake or a wall,
+        // the snake dies and stops moving. When a snake dies, the head is replaced with an x.
+        if (x == '#' || is_snake(x)) {
+            state->board[state->snakes[i].head_row][state->snakes[i].head_col] = 'x';
+            state->snakes[i].live = false;
+        } else if (x == '*') {
+            update_head(state, i);
+            add_food(state);
+        } else {
+            update_head(state, i);
+            update_tail(state, i);
+        }
+    }
 }
 
 /* Task 5 */
