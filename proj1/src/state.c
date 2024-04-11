@@ -280,8 +280,15 @@ static void update_head(game_state_t *state, unsigned int snum) {
   ...in the snake struct: update the row and col of the tail
 */
 static void update_tail(game_state_t *state, unsigned int snum) {
-    // TODO: Implement this function.
-    return;
+    snake_t *snake = &(state->snakes[snum]);
+    char c = get_board_at(state, snake->tail_row, snake->tail_col);
+    unsigned int next_row = get_next_row(snake->tail_row, c);
+    unsigned int next_col = get_next_col(snake->tail_col, c);
+    char x = get_board_at(state, next_row, next_col);
+    state->board[next_row][next_col] = body_to_tail(x);
+    state->board[snake->tail_row][snake->tail_col] = ' ';
+    snake->tail_row = next_row;
+    snake->tail_col = next_col;
 }
 
 /* Task 4.5 */
