@@ -23,4 +23,5 @@ add_executable(ex10 lab01/ex10_test_ll_cycle.c lab01/ex10_ll_cycle.c lab01/ex10_
 add_executable(lab02_ex1 lab02/ex1_compiler_warnings.c)
 
 
-add_executable(proj1_unittest projs/proj1/src/unit_tests.c)
+add_executable(unit-tests proj1/src/unit_tests.c proj1/src/snake_utils.c proj1/src/asserts.c)
+add_executable(proj1_custom_tests proj1/src/custom_tests.c proj1/src/snake_utils.c proj1/src/asserts.c)
