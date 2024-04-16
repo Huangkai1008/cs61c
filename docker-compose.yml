@@ -6,6 +6,7 @@ services:
       - .:/cs61c
     ports:
       - "8144:22"
+      - "6161:6161"
     environment:
       - TZ=Asia/Shanghai
     privileged: true
