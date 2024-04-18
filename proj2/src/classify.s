@@ -29,7 +29,7 @@ classify:
     bne a0, t0, argument_error
 
     # Prologue
-    addi sp, sp, 36
+    addi sp, sp, -40
     sw ra, 0(sp)
     sw s1, 4(sp)    # hold argv
     sw s2, 8(sp)    # whether to print
@@ -39,6 +39,7 @@ classify:
     sw s6, 24(sp)   # hold pointer to h
     sw s7, 28(sp)   # hold pointer to output
     sw s8, 32(sp)   # hold answer
+    sw sp, 36(sp)
 
     mv s1, a1
     mv s2, a2
@@ -142,18 +143,21 @@ classify:
     mul a1, t0, t1
     jal argmax
 
+    mv s8, a0
+
     # free o
     mv a0, s7
     jal free
 
     # If enabled, print argmax(o) and newline
     bne s2, zero, end
+    mv a0, s8
     jal print_int
     li a0, '\n'
     jal print_char
 
 end:
-    mv s8, a0
+    mv a0, s8
     addi sp, sp, 24
 
     lw ra, 0(sp)
@@ -165,7 +169,8 @@ end:
     lw s6, 24(sp)
     lw s7, 28(sp)
     lw s8, 32(sp)
-    addi sp, sp, 36
+    lw sp, 36(sp)
+    addi sp, sp, 40
 
     jr ra
 

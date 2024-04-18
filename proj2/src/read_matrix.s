@@ -104,7 +104,7 @@ end:
     lw s1, 8(sp)
     lw s2, 12(sp)
     lw s3, 16(sp)
-    lw s4, 24(sp)
+    lw s4, 20(sp)
     addi sp, sp, 24
 
     jr ra
