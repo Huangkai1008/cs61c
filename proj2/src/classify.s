@@ -77,6 +77,7 @@ classify:
     mul a0, t0, t1 
     slli a0, a0, 2
     jal malloc
+    beq a0, zero, malloc_error
     mv s6, a0
 
     # Compute h = matmul(m0, input)
@@ -108,6 +109,7 @@ classify:
     mul a0, t0, t1
     slli a0, a0, 2
     jal malloc
+    beq a0, zero, malloc_error
     mv s7, a0
     
     # Compute o = matmul(m1, h)
@@ -127,7 +129,7 @@ classify:
     jal free
 
     # Write output matrix o
-    addi a0, s1, 16
+    lw a0, 16(s1)
     mv a1, s7
     lw a2, 8(sp)
     lw a3, 20(sp)
